@@ -1,0 +1,22 @@
+{
+  "name": "youtrack-gerrit-plugin",
+  "title": "Gerrit Plugin",
+  "description": "Shows CRs connected to the issues (TODO: more)",
+  "$schema": "https://json.schemastore.org/youtrack-app.json",
+  "vendor": {
+    "name": "Phoenix Systems",
+    "url": "https://phoenix-rtos.com/"
+  },
+  "icon": "icon.svg",
+  "widgets": [
+
+    {
+      "key": "crlist",
+      "name": "Gerrit CRs",
+      "indexPath": "crlist/index.html",
+      "extensionPoint": "ISSUE_ABOVE_ACTIVITY_STREAM",
+      "iconPath": "crlist/widget-icon.svg",
+      "description": "Shows Gerrit CRs related to this issue"
+    }
+  ]
+}
