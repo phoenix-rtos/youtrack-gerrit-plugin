@@ -56,13 +56,20 @@ function formatChange(change, gerritUrl) {
         });
     }
 
+    // Determine effective status (WIP is a sub-state of NEW)
+    var isWip = change.work_in_progress === true;
+    var effectiveStatus = change.status;
+    if (change.status === 'NEW' && isWip) {
+        effectiveStatus = 'WIP';
+    }
+
     return {
         number: change._number,
         changeId: change.change_id,
         project: change.project,
         branch: change.branch,
         subject: change.subject,
-        status: change.status,
+        status: effectiveStatus,
         created: change.created,
         updated: change.updated,
         owner: change.owner ? {
@@ -72,6 +79,7 @@ function formatChange(change, gerritUrl) {
         insertions: change.insertions || 0,
         deletions: change.deletions || 0,
         labels: labels,
+        isWip: isWip,
         isOpen: change.status === 'NEW',
         url: gerritUrl.replace(/\/$/, '') + '/c/' + change.project + '/+/' + change._number
     };

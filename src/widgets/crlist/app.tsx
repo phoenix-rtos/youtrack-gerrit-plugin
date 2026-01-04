@@ -1,7 +1,6 @@
 import React, {memo, useCallback, useEffect, useState} from 'react';
 import Link from '@jetbrains/ring-ui-built/components/link/link';
 import Loader from '@jetbrains/ring-ui-built/components/loader/loader';
-import Tag from '@jetbrains/ring-ui-built/components/tag/tag';
 import Alert, {Container as AlertContainer} from '@jetbrains/ring-ui-built/components/alert/alert';
 import Text from '@jetbrains/ring-ui-built/components/text/text';
 
@@ -29,13 +28,14 @@ interface GerritChange {
   project: string;
   branch: string;
   subject: string;
-  status: 'NEW' | 'MERGED' | 'ABANDONED';
+  status: 'NEW' | 'MERGED' | 'ABANDONED' | 'WIP';
   created: string;
   updated: string;
   owner: GerritOwner | null;
   insertions: number;
   deletions: number;
   labels: Record<string, GerritLabel>;
+  isWip: boolean;
   isOpen: boolean;
   url: string;
 }
@@ -48,132 +48,44 @@ interface ApiResponse {
 }
 
 /**
- * Get status badge color based on change status
+ * Get label cell content with color
  */
-function getStatusColor(status: string): string {
+function getLabelDisplay(labels: Record<string, GerritLabel>, labelName: string): { text: string; className: string } {
+  const label = labels[labelName];
+  if (!label) return { text: '', className: '' };
+  
+  const value = label.value;
+  if (label.approved || value === '+2') {
+    return { text: value, className: 'label-approved' };
+  }
+  if (label.rejected || value === '-2') {
+    return { text: value, className: 'label-rejected' };
+  }
+  if (value === '+1') {
+    return { text: value, className: 'label-positive' };
+  }
+  if (value === '-1') {
+    return { text: value, className: 'label-negative' };
+  }
+  return { text: value || '0', className: 'label-neutral' };
+}
+
+/**
+ * Get status icon and color
+ */
+function getStatusDisplay(status: string): { icon: string; className: string; text: string } {
   switch (status) {
     case 'MERGED':
-      return 'var(--ring-success-color)';
+      return { icon: '✓', className: 'status-merged', text: 'Merged' };
     case 'ABANDONED':
-      return 'var(--ring-error-color)';
+      return { icon: '✗', className: 'status-abandoned', text: 'Abandoned' };
+    case 'WIP':
+      return { icon: '◐', className: 'status-wip', text: 'Work in Progress' };
     case 'NEW':
     default:
-      return 'var(--ring-main-color)';
+      return { icon: '○', className: 'status-new', text: 'Open' };
   }
 }
-
-/**
- * Format label for display
- */
-function formatLabel(name: string, label: GerritLabel): string {
-  const shortName = name.replace('Code-Review', 'CR').replace('Verified', 'V');
-  return `${shortName}: ${label.value}`;
-}
-
-/**
- * Get label badge style
- */
-function getLabelStyle(label: GerritLabel): React.CSSProperties {
-  if (label.approved) {
-    return { backgroundColor: 'var(--ring-success-color)', color: 'white' };
-  }
-  if (label.rejected) {
-    return { backgroundColor: 'var(--ring-error-color)', color: 'white' };
-  }
-  if (label.value === '+1') {
-    return { backgroundColor: 'var(--ring-success-background-color)', color: 'var(--ring-success-color)' };
-  }
-  if (label.value === '-1') {
-    return { backgroundColor: 'var(--ring-error-background-color)', color: 'var(--ring-error-color)' };
-  }
-  return {};
-}
-
-/**
- * Format relative time
- */
-function formatRelativeTime(dateString: string): string {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  
-  if (diffDays === 0) {
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    if (diffHours === 0) {
-      const diffMins = Math.floor(diffMs / (1000 * 60));
-      return `${diffMins}m ago`;
-    }
-    return `${diffHours}h ago`;
-  }
-  if (diffDays === 1) return 'yesterday';
-  if (diffDays < 7) return `${diffDays}d ago`;
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
-  return date.toLocaleDateString();
-}
-
-/**
- * Single change row component
- */
-const ChangeRow: React.FC<{ change: GerritChange }> = ({ change }) => {
-  const labels = Object.entries(change.labels);
-  
-  return (
-    <div className="change-row">
-      <div className="change-header">
-        <Link href={change.url} target="_blank" className="change-subject">
-          {change.subject}
-        </Link>
-        <Tag 
-          readOnly
-          backgroundColor={getStatusColor(change.status)}
-          textColor="white"
-        >
-          {change.status}
-        </Tag>
-      </div>
-      
-      <div className="change-meta">
-        <Text info className="change-info">
-          <span className="change-number">#{change.number}</span>
-          <span className="separator">•</span>
-          <span>{change.project}</span>
-          <span className="separator">•</span>
-          <span>{change.branch}</span>
-          {change.owner && (
-            <>
-              <span className="separator">•</span>
-              <span>{change.owner.name}</span>
-            </>
-          )}
-          <span className="separator">•</span>
-          <span title={change.updated}>{formatRelativeTime(change.updated)}</span>
-          <span className="separator">•</span>
-          <span className="diff-stats">
-            <span className="insertions">+{change.insertions}</span>
-            <span className="deletions">-{change.deletions}</span>
-          </span>
-        </Text>
-      </div>
-      
-      {labels.length > 0 && (
-        <div className="change-labels">
-          {labels.map(([name, label]) => (
-            <Tag 
-              key={name}
-              readOnly
-              backgroundColor={getLabelStyle(label).backgroundColor}
-              textColor={getLabelStyle(label).color}
-              rgTagTitle={label.by ? `${name}: ${label.value} by ${label.by}` : `${name}: ${label.value}`}
-            >
-              {formatLabel(name, label)}
-            </Tag>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
 
 /**
  * Main widget component
@@ -182,7 +94,6 @@ const AppComponent: React.FunctionComponent = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [changes, setChanges] = useState<GerritChange[]>([]);
-  const [query, setQuery] = useState<string>('');
 
   const fetchChanges = useCallback(async () => {
     setLoading(true);
@@ -196,7 +107,6 @@ const AppComponent: React.FunctionComponent = () => {
         setChanges([]);
       } else {
         setChanges(result.changes || []);
-        setQuery(result.query || '');
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to fetch changes');
@@ -241,40 +151,75 @@ const AppComponent: React.FunctionComponent = () => {
     );
   }
 
-  // Render changes list
+  // Split changes by status
   const openChanges = changes.filter(c => c.isOpen);
   const closedChanges = changes.filter(c => !c.isOpen);
 
+  // Collect all unique label names across all changes
+  const allLabelNames = new Set<string>();
+  changes.forEach(c => Object.keys(c.labels).forEach(l => allLabelNames.add(l)));
+  const labelColumns = Array.from(allLabelNames).map(name => ({
+    name,
+    short: name.replace('Code-Review', 'CR').replace('Verified', 'V').replace('Coding-Style', 'CS')
+  }));
+
+  const renderTable = (changeList: GerritChange[], title: string) => {
+    if (changeList.length === 0) return null;
+    
+    return (
+      <div className="changes-section">
+        <div className="section-header">
+          <span className="section-title">{title}</span>
+          <span className="section-count">({changeList.length})</span>
+        </div>
+        <table className="changes-table">
+          <thead>
+            <tr>
+              <th className="col-status">Status</th>
+              <th className="col-subject">Subject</th>
+              <th className="col-project">Project</th>
+              <th className="col-branch">Branch</th>
+              {labelColumns.map(lc => (
+                <th key={lc.name} className="col-label" title={lc.name}>{lc.short}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {changeList.map(change => {
+              const status = getStatusDisplay(change.status);
+              return (
+                <tr key={change.number} className="change-row">
+                  <td className={`col-status ${status.className}`} title={status.text}>
+                    <span className="status-icon">{status.icon}</span>
+                  </td>
+                  <td className="col-subject">
+                    <Link href={change.url} target="_blank" title={change.subject}>
+                      {change.subject}
+                    </Link>
+                  </td>
+                  <td className="col-project" title={change.project}>{change.project}</td>
+                  <td className="col-branch" title={change.branch}>{change.branch}</td>
+                  {labelColumns.map(lc => {
+                    const ld = getLabelDisplay(change.labels, lc.name);
+                    return (
+                      <td key={lc.name} className={`col-label ${ld.className}`}>
+                        {ld.text}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
   return (
     <div className="widget">
-      <div className="widget-header">
-        <h3 className="widget-title">
-          Gerrit Changes
-          <Tag readOnly tagType={Tag.Type.MAIN}>{changes.length}</Tag>
-        </h3>
-      </div>
-      
-      {openChanges.length > 0 && (
-        <div className="changes-section">
-          <h4 className="section-title">Open ({openChanges.length})</h4>
-          <div className="changes-list">
-            {openChanges.map(change => (
-              <ChangeRow key={change.number} change={change} />
-            ))}
-          </div>
-        </div>
-      )}
-      
-      {closedChanges.length > 0 && (
-        <div className="changes-section">
-          <h4 className="section-title">Closed ({closedChanges.length})</h4>
-          <div className="changes-list">
-            {closedChanges.map(change => (
-              <ChangeRow key={change.number} change={change} />
-            ))}
-          </div>
-        </div>
-      )}
+      {renderTable(openChanges, 'Open')}
+      {renderTable(closedChanges, 'Closed')}
     </div>
   );
 };
