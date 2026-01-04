@@ -2,9 +2,38 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
     "title": "Gerrit Plugin Settings",
-    "description": "",
+    "description": "Configure connection to your Gerrit Code Review server",
     "properties": {
+        "gerritUrl": {
+            "type": "string",
+            "label": "Gerrit URL",
+            "description": "Base URL of your Gerrit server (e.g., https://gerrit.example.com)"
+        },
+        "gerritUsername": {
+            "type": "string",
+            "label": "Gerrit Username",
+            "description": "Username for HTTP authentication"
+        },
+        "gerritPassword": {
+            "type": "string",
+            "format": "secret",
+            "label": "Gerrit HTTP Password",
+            "description": "HTTP password or API token (generate in Gerrit Settings > HTTP Credentials)"
+        },
+        "searchQuery": {
+            "type": "string",
+            "label": "Search Query Pattern",
+            "description": "Query pattern to find changes. Use %s as placeholder for issue ID. Examples: message:%s, tr:%s, topic:%s. Default: message:%s"
+        },
+        "showEmptyWidget": {
+            "type": "boolean",
+            "label": "Show Empty Widget",
+            "description": "Show the widget even when no related changes are found"
+        }
     },
-    "required":[
+    "required": [
+        "gerritUrl",
+        "gerritUsername",
+        "gerritPassword"
     ]
 }

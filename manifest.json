@@ -1,7 +1,7 @@
 {
   "name": "youtrack-gerrit-plugin",
-  "title": "Gerrit Plugin",
-  "description": "Shows CRs connected to the issues (TODO: more)",
+  "title": "Gerrit Integration",
+  "description": "Displays related Gerrit Code Review changes (CRs) in issue views. Shows status, approvals, and links to Gerrit for each change.",
   "$schema": "https://json.schemastore.org/youtrack-app.json",
   "vendor": {
     "name": "Phoenix Systems",
@@ -12,11 +12,11 @@
 
     {
       "key": "crlist",
-      "name": "Gerrit CRs",
+      "name": "Gerrit Changes",
       "indexPath": "crlist/index.html",
       "extensionPoint": "ISSUE_ABOVE_ACTIVITY_STREAM",
       "iconPath": "crlist/widget-icon.svg",
-      "description": "Shows Gerrit CRs related to this issue"
+      "description": "Shows Gerrit changes related to this issue with status and approvals"
     }
   ]
 }

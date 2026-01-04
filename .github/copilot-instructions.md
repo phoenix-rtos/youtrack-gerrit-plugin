@@ -1,0 +1,159 @@
+# Copilot Instructions for YouTrack Gerrit Plugin
+
+## Project Overview
+
+This is a **YouTrack App** that integrates with **Gerrit Code Review** to display related Change Requests (CRs) within issue views. The app follows the YouTrack App development model with widgets and HTTP handlers.
+
+## Technology Stack
+
+### Frontend (Widget)
+- **React 18** with TypeScript
+- **@jetbrains/ring-ui-built** - JetBrains Ring UI component library
+- **Vite** - Build tool
+- Files located in `src/widgets/crlist/`
+
+### Backend (HTTP Handlers)
+- **JavaScript** (YouTrack's scripting runtime is ES5/ES6 based)
+- Uses `@jetbrains/youtrack-scripting-api` modules
+- Files located at `src/*.js`
+
+### Configuration
+- `manifest.json` - App definition
+- `src/settings.json` - Settings schema
+
+## Important Files
+
+| File | Purpose |
+|------|---------|
+| `manifest.json` | App manifest with widget registration |
+| `src/settings.json` | Configuration schema for admin settings |
+| `src/gerrit-api.js` | Backend HTTP handler for Gerrit queries |
+| `src/widgets/crlist/app.tsx` | Main React widget component |
+| `src/widgets/crlist/index.tsx` | React entry point |
+| `src/widgets/crlist/app.css` | Widget styles |
+
+## YouTrack App APIs
+
+### Host API (Frontend)
+```typescript
+// Register widget and get host object
+const host = await YTApp.register();
+
+// Fetch from backend (scope:true includes issue context)
+const data = await host.fetchApp('gerrit-api/changes', { scope: true });
+
+// Get current issue ID
+const issue = await host.getEntity('issue', 'idReadable');
+```
+
+### HTTP Handler (Backend)
+```javascript
+const http = require('@jetbrains/youtrack-scripting-api/http');
+
+exports.httpHandler = {
+  endpoints: [
+    {
+      method: 'GET',
+      path: '/changes',
+      scope: 'issue', // Gives access to ctx.issue
+      handle: function(ctx) {
+        const issueId = ctx.issue.id;
+        const settings = ctx.settings;
+        // ... query Gerrit
+        ctx.response.json(result);
+      }
+    }
+  ]
+};
+```
+
+**IMPORTANT**: All endpoints in a single HTTP handler must use the same scope level. Do not mix global-level endpoints (no scope) with project/issue-level endpoints (`scope: 'issue'`).
+
+### HTTP Client (Backend)
+```javascript
+const http = require('@jetbrains/youtrack-scripting-api/http');
+const connection = new http.Connection('https://gerrit.example.com');
+connection.basicAuth('user', 'password');
+const response = connection.getSync('/a/changes/', {q: 'message:ISSUE-123'});
+```
+
+## Build Commands
+
+```bash
+# Install dependencies
+npm install
+
+# Build the app
+npm run build
+
+# Create zip package
+npm run pack
+
+# Upload to YouTrack
+npm run upload -- --host $YOUTRACK_BASE_URL --token $YOUTRACK_TOKEN
+```
+
+## Widget Extension Points
+
+This app uses `ISSUE_ABOVE_ACTIVITY_STREAM` to place the widget above the issue activity stream. Other options:
+- `ISSUE_FIELD_PANEL_FIRST/LAST`
+- `ISSUE_BELOW_SUMMARY`
+- `ISSUE_HEADER`
+
+## Gerrit REST API
+
+Base URL format: `https://gerrit.example.com/a/changes/`
+
+Key endpoints:
+- `GET /changes/?q=...` - Query changes
+- Query options: `&o=CURRENT_REVISION&o=LABELS&o=DETAILED_ACCOUNTS`
+
+Authentication: HTTP Basic Auth with username + HTTP password (not the account password, but a token generated in Gerrit settings).
+
+## Coding Conventions
+
+1. **Backend is ES6 JavaScript** - Not TypeScript, due to YouTrack runtime
+2. **Frontend is TypeScript** - Full type safety with React
+3. **Ring UI components** - Use for consistent styling:
+   - `Loader` for loading states
+   - `Table` for data display
+   - `Tag` for status indicators (not Badge)
+   - `Link` for external links
+4. **Error handling** - Always wrap API calls in try/catch
+5. **Caching** - Consider caching Gerrit responses (they're expensive)
+
+## Testing
+
+Limited automated testing options. Preferred approach:
+1. **Type checking**: TypeScript for frontend, JSDoc for backend
+2. **Manual testing**: With real YouTrack + Gerrit instances
+3. **Console logging**: Use `console.log()` in backend for debugging
+
+## Common Issues
+
+1. **CORS**: Gerrit CORS headers may block direct widget→Gerrit calls. Always proxy through backend.
+2. **Auth**: Gerrit HTTP password is different from account password. Users must generate it in Gerrit Settings.
+3. **JSON prefix**: Gerrit REST responses start with `)]}'` - strip this before parsing.
+4. **Rate limiting**: Be mindful of Gerrit query limits; implement caching.
+5. **Scope mixing**: All endpoints in one HTTP handler must have the same scope level.
+
+## Settings Schema Format
+
+Settings are defined in `src/settings.json`:
+```json
+{
+  "properties": {
+    "settingName": {
+      "type": "string",
+      "label": "Display Label",
+      "description": "Help text"
+    },
+    "secretSetting": {
+      "type": "string",
+      "format": "secret",
+      "label": "Password"
+    }
+  },
+  "required": ["settingName"]
+}
+```
