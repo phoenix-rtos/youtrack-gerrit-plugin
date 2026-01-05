@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTrack Gerrit Plugin - Screenshot Mockup</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background-color: #1e1e1e;
+      color: #e0e0e0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    
+    .container {
+      width: 1200px;
+      min-height: 760px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    /* Header area */
+    .issue-header {
+      margin-bottom: 24px;
+    }
+    
+    .issue-meta {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 8px;
+    }
+    
+    .issue-meta a {
+      color: #6b9eff;
+      text-decoration: none;
+    }
+    
+    .issue-title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .star-icon {
+      color: #ffc107;
+      font-size: 20px;
+    }
+    
+    .issue-title {
+      font-size: 24px;
+      font-weight: 500;
+      color: #fff;
+    }
+    
+    .issue-actions {
+      display: flex;
+      gap: 8px;
+      margin-left: 16px;
+    }
+    
+    .issue-actions span {
+      color: #666;
+      cursor: pointer;
+    }
+    
+    .issue-description {
+      color: #888;
+      margin: 16px 0;
+      font-size: 14px;
+    }
+    
+    /* Collapsible sections */
+    .section {
+      border-top: 1px solid #333;
+      padding: 12px 0;
+    }
+    
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: #e0e0e0;
+      font-size: 14px;
+    }
+    
+    .section-header .chevron {
+      color: #666;
+    }
+    
+    .section-header .icon {
+      width: 20px;
+      height: 20px;
+    }
+    
+    /* Links section */
+    .links-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .add-links {
+      color: #6b9eff;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    
+    .subtask-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0 8px 24px;
+      font-size: 13px;
+    }
+    
+    .subtask-item .state-badge {
+      background: #4a4a4a;
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 11px;
+    }
+    
+    .subtask-item a {
+      color: #6b9eff;
+      text-decoration: none;
+    }
+    
+    /* Gerrit Widget */
+    .gerrit-widget {
+      margin-top: 8px;
+    }
+    
+    .widget-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+    }
+    
+    .widget-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    
+    .widget-icon svg {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+    
+    .widget-title {
+      font-weight: 500;
+    }
+    
+    /* Table styles */
+    .changes-section {
+      margin-bottom: 16px;
+    }
+    
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 8px 0;
+      border-bottom: 1px solid #333;
+    }
+    
+    .changes-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    
+    .changes-table th {
+      text-align: left;
+      padding: 8px;
+      font-weight: 500;
+      color: #888;
+      border-bottom: 1px solid #333;
+      font-size: 13px;
+    }
+    
+    .changes-table td {
+      padding: 8px;
+      border-bottom: 1px solid #2a2a2a;
+      font-size: 13px;
+    }
+    
+    .changes-table tbody tr:hover {
+      background-color: #2a2a2a;
+    }
+    
+    .col-status {
+      width: 50px;
+      text-align: center;
+    }
+    
+    .col-subject {
+      width: auto;
+    }
+    
+    .col-subject a {
+      color: #6b9eff;
+      text-decoration: none;
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .col-subject a:hover {
+      text-decoration: underline;
+    }
+    
+    .col-project {
+      width: 100px;
+      color: #888;
+    }
+    
+    .col-branch {
+      width: 100px;
+      color: #888;
+    }
+    
+    .col-label {
+      text-align: center;
+      width: 45px;
+      font-family: monospace;
+      font-weight: 500;
+    }
+    
+    /* Status icons */
+    .status-merged { color: #4caf50; }
+    .status-new { color: #2196f3; }
+    .status-wip { color: #ff9800; }
+    .status-abandoned { color: #f44336; }
+    
+    /* Label colors - Gerrit style with backgrounds */
+    .col-label span {
+      display: inline-block;
+      min-width: 22px;
+      text-align: center;
+      border-radius: 3px;
+      padding: 3px 5px;
+      line-height: 1;
+    }
+    .label-positive span { 
+      color: #5FAD65; 
+      background: #222D25;
+    }
+    .label-negative span { 
+      color: #E37774; 
+      background: #362627;
+    }
+    .label-neutral { color: #888; }
+    .label-approved span { 
+      color: #5FAD65; 
+      background: #375239;
+    }
+    
+    /* Footer area */
+    .activity-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 0;
+      border-top: 1px solid #333;
+      margin-top: 24px;
+    }
+    
+    .activity-icons {
+      display: flex;
+      gap: 12px;
+      color: #666;
+    }
+    
+    .activity-settings {
+      margin-left: auto;
+      color: #888;
+      font-size: 13px;
+    }
+    
+    .comment-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: #2a2a2a;
+      border-radius: 6px;
+      margin-top: 8px;
+    }
+    
+    .avatar {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    
+    .comment-input {
+      flex: 1;
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 14px;
+    }
+    
+    /* Visibility badge */
+    .visibility {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #888;
+      font-size: 13px;
+    }
+    
+    .visibility .eye {
+      color: #4caf50;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" style="position: relative;">
+    <div class="visibility">
+      <span class="eye">👁</span> Visible to issue readers ▾
+    </div>
+    
+    <div class="issue-header">
+      <div class="issue-meta">
+        Created by <a href="#">John Developer</a> 2 months ago
+      </div>
+      <div class="issue-title-row">
+        <span class="star-icon">★</span>
+        <h1 class="issue-title">Implement user authentication module</h1>
+        <div class="issue-actions">
+          <span>✏️</span>
+          <span>🔗</span>
+          <span>@</span>
+          <span>📎</span>
+          <span>⋯</span>
+        </div>
+      </div>
+      <p class="issue-description">Add OAuth2 support for third-party authentication providers including Google, GitHub, and Microsoft.</p>
+    </div>
+    
+    <div class="section">
+      <div class="section-header links-section">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="chevron">▾</span>
+          <span>Subtask of</span>
+          <span style="color: #888;">1</span>
+        </div>
+        <span class="add-links">🔗 Add links ↗</span>
+      </div>
+      <div class="subtask-item">
+        <span>☆</span>
+        <span class="state-badge">M</span>
+        <a href="#">AUTH-42</a>
+        <span>Security Infrastructure Overhaul</span>
+      </div>
+    </div>
+    
+    <div class="section gerrit-widget">
+      <div class="section-header">
+        <span class="chevron">▾</span>
+        <div class="widget-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+            <defs>
+              <linearGradient id="ytGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FB43FF"/>
+                <stop offset="100%" stop-color="#FB406D"/>
+              </linearGradient>
+            </defs>
+            <rect x="2" y="2" width="60" height="60" rx="8" ry="8" fill="url(#ytGradient)"/>
+            <rect x="8" y="8" width="32" height="32" rx="4" ry="4" fill="#ffcccc" opacity="0.9"/>
+            <rect x="24" y="24" width="32" height="32" rx="4" ry="4" fill="#ccffcc" opacity="0.95"/>
+            <rect x="14" y="22" width="14" height="4" rx="1" fill="#cc0000"/>
+            <rect x="34" y="38" width="14" height="4" rx="1" fill="#008800"/>
+            <rect x="39" y="33" width="4" height="14" rx="1" fill="#008800"/>
+          </svg>
+        </div>
+        <span class="widget-title">Gerrit Changes</span>
+      </div>
+      
+      <div style="padding-left: 4px; margin-top: 8px;">
+        <div class="changes-section">
+          <div class="section-label">OPEN (2)</div>
+          <table class="changes-table">
+            <thead>
+              <tr>
+                <th class="col-status">Status</th>
+                <th class="col-subject">Subject</th>
+                <th class="col-project">Project</th>
+                <th class="col-branch">Branch</th>
+                <th class="col-label">CR</th>
+                <th class="col-label">V</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="col-status status-wip">◐</td>
+                <td class="col-subject"><a href="#">auth: add OAuth2 provider abstraction layer (WIP)</a></td>
+                <td class="col-project">backend</td>
+                <td class="col-branch">feature/auth</td>
+                <td class="col-label label-neutral">0</td>
+                <td class="col-label label-negative"><span>-1</span></td>
+              </tr>
+              <tr>
+                <td class="col-status status-new">○</td>
+                <td class="col-subject"><a href="#">auth: implement Google OAuth2 provider</a></td>
+                <td class="col-project">backend</td>
+                <td class="col-branch">feature/auth</td>
+                <td class="col-label label-approved"><span>+2</span></td>
+                <td class="col-label label-neutral">0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="changes-section">
+          <div class="section-label">CLOSED (4)</div>
+          <table class="changes-table">
+            <thead>
+              <tr>
+                <th class="col-status">Status</th>
+                <th class="col-subject">Subject</th>
+                <th class="col-project">Project</th>
+                <th class="col-branch">Branch</th>
+                <th class="col-label">CR</th>
+                <th class="col-label">V</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="col-status status-merged">✓</td>
+                <td class="col-subject"><a href="#">auth: add session management utilities</a></td>
+                <td class="col-project">backend</td>
+                <td class="col-branch">master</td>
+                <td class="col-label label-approved"><span>+2</span></td>
+                <td class="col-label label-positive"><span>+1</span></td>
+              </tr>
+              <tr>
+                <td class="col-status status-merged">✓</td>
+                <td class="col-subject"><a href="#">auth: implement JWT token validation</a></td>
+                <td class="col-project">backend</td>
+                <td class="col-branch">master</td>
+                <td class="col-label label-approved"><span>+2</span></td>
+                <td class="col-label label-positive"><span>+1</span></td>
+              </tr>
+              <tr>
+                <td class="col-status status-merged">✓</td>
+                <td class="col-subject"><a href="#">frontend: add login page component</a></td>
+                <td class="col-project">webapp</td>
+                <td class="col-branch">master</td>
+                <td class="col-label label-approved"><span>+2</span></td>
+                <td class="col-label label-positive"><span>+1</span></td>
+              </tr>
+              <tr>
+                <td class="col-status status-abandoned">✗</td>
+                <td class="col-subject"><a href="#">auth: experimental LDAP integration</a></td>
+                <td class="col-project">backend</td>
+                <td class="col-branch">master</td>
+                <td class="col-label label-negative"><span>-1</span></td>
+                <td class="col-label label-neutral">0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <div class="activity-bar">
+      <div class="activity-icons">
+        <span>💬</span>
+        <span>📎</span>
+        <span>⏱</span>
+        <span>🎤</span>
+      </div>
+      <span class="activity-settings">Activity settings ▾</span>
+    </div>
+    
+    <div class="comment-box">
+      <div class="avatar">JD</div>
+      <input type="text" class="comment-input" placeholder="Write a comment, @mention people" readonly>
+    </div>
+  </div>
+</body>
+</html>
