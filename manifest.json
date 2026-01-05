@@ -1,6 +1,8 @@
 {
   "name": "youtrack-gerrit-plugin",
   "title": "Gerrit Integration",
+  "version": "1.0.0",
+  "url": "https://github.com/phoenix-rtos/youtrack-gerrit-plugin",
   "description": "Displays related Gerrit Code Review changes (CRs) in issue views. Shows status, approvals, and links to Gerrit for each change.",
   "$schema": "https://json.schemastore.org/youtrack-app.json",
   "vendor": {
