@@ -202,8 +202,8 @@ const AppComponent: React.FunctionComponent = () => {
                   {labelColumns.map(lc => {
                     const ld = getLabelDisplay(change.labels, lc.name);
                     return (
-                      <td key={lc.name} className={`col-label ${ld.className}`}>
-                        {ld.text}
+                      <td key={lc.name} className="col-label">
+                        {ld.text && <span className={ld.className}>{ld.text}</span>}
                       </td>
                     );
                   })}

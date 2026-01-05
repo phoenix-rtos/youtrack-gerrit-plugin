@@ -108,22 +108,20 @@
 
 th.col-label {
   text-align: center;
-  width: 28px;
-  min-width: 28px;
-  max-width: 36px;
-  padding-left: 4px !important;
-  padding-right: 4px !important;
+  width: 32px;
+  min-width: 32px;
+  max-width: 40px;
+  padding-left: 2px !important;
+  padding-right: 2px !important;
 }
 
 td.col-label {
   text-align: center;
-  width: 28px;
-  min-width: 28px;
-  max-width: 36px;
-  padding-left: 4px !important;
-  padding-right: 4px !important;
-  font-weight: 500;
-  font-family: var(--ring-font-family-monospace);
+  width: 32px;
+  min-width: 32px;
+  max-width: 40px;
+  padding-left: 2px !important;
+  padding-right: 2px !important;
 }
 
 /* Status icons */
@@ -148,25 +146,40 @@ td.col-label {
   color: var(--ring-warning-color);
 }
 
-/* Label colors */
+/* Label colors - Gerrit-style with backgrounds */
+td.col-label {
+  padding: 4px 2px !important;
+}
+
+td.col-label span {
+  display: inline-block;
+  min-width: 22px;
+  text-align: center;
+  border-radius: 3px;
+  padding: 3px 5px;
+  font-weight: 500;
+  font-family: var(--ring-font-family-monospace);
+  line-height: 1;
+}
+
 .label-approved {
   color: var(--ring-success-color);
-  background-color: var(--ring-success-background-color);
-  border-radius: 3px;
+  background-color: var(--ring-added-background-color);
 }
 
 .label-rejected {
   color: var(--ring-error-color);
-  background-color: var(--ring-error-background-color);
-  border-radius: 3px;
+  background-color: var(--ring-removed-background-color);
 }
 
 .label-positive {
   color: var(--ring-success-color);
+  background-color: var(--ring-success-container-light-color);
 }
 
 .label-negative {
   color: var(--ring-error-color);
+  background-color: var(--ring-error-container-light-color);
 }
 
 .label-neutral {
