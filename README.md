@@ -1,6 +1,8 @@
-# YouTrack Gerrit Plugin
+# <img src="public/icon.svg" width="32" height="32" alt="icon"> YouTrack Gerrit Plugin
 
 A YouTrack App that integrates with Gerrit Code Review to display related Change Requests (CRs) directly within issue views.
+
+[![JetBrains Plugins](https://img.shields.io/badge/JetBrains-Marketplace-blue?logo=jetbrains)](https://plugins.jetbrains.com/plugin/29633-gerrit-integration)
 
 ## Features
 
@@ -12,17 +14,30 @@ A YouTrack App that integrates with Gerrit Code Review to display related Change
 
 ## Screenshot
 
-*(TODO: Add screenshot of widget in YouTrack)*
+![YouTrack Gerrit Plugin - Issue View](docs/screenshot-issue-view.png)
+
+*The Gerrit Changes widget displays all related code reviews directly in the YouTrack issue view, organized by status (Open/Closed) with approval labels.*
 
 ## Installation
 
-### Prerequisites
+### Easy Installation (Recommended)
+
+The easiest way to install this plugin is from the **[JetBrains Marketplace](https://plugins.jetbrains.com/plugin/29633-gerrit-integration)**:
+
+1. Go to YouTrack: **Administration > Apps**
+2. Click **Install app from JetBrains Marketplace**
+3. Search for "Gerrit Integration" and install
+4. Configure the app settings (see Configuration below)
+
+### Manual Installation
+
+#### Prerequisites
 
 - YouTrack 2023.3 or later
 - Gerrit 2.13 or later (REST API support required)
 - Node.js 18+ (for building)
 
-### Building
+#### Building
 
 ```bash
 # Install dependencies
@@ -35,14 +50,14 @@ npm run build
 npm run pack
 ```
 
-### Installing in YouTrack
+##### Installing in YouTrack
 
 1. Build and pack the app (see above)
 2. Go to YouTrack: **Administration > Apps**
 3. Click **New app** and upload the generated `.zip` file from `dist/`
 4. Configure the app settings (see Configuration below)
 
-### Development Upload
+#### Development Upload
 
 For development, you can upload directly:
 
