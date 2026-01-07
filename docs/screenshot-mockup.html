@@ -203,12 +203,13 @@
     }
     
     .col-status {
-      width: 50px;
+      width: 24px;
       text-align: center;
     }
     
     .col-subject {
       width: auto;
+      min-width: 0;
     }
     
     .col-subject a {
@@ -224,19 +225,22 @@
       text-decoration: underline;
     }
     
-    .col-project {
-      width: 100px;
-      color: #888;
-    }
-    
+    .col-project,
     .col-branch {
       width: 100px;
+      min-width: 40px;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       color: #888;
     }
     
     .col-label {
       text-align: center;
-      width: 45px;
+      width: 36px;
+      min-width: 32px;
+      max-width: 44px;
       font-family: monospace;
       font-weight: 500;
     }
@@ -409,7 +413,7 @@
           <table class="changes-table">
             <thead>
               <tr>
-                <th class="col-status">Status</th>
+                <th class="col-status" title="Status">S</th>
                 <th class="col-subject">Subject</th>
                 <th class="col-project">Project</th>
                 <th class="col-branch">Branch</th>
@@ -443,7 +447,7 @@
           <table class="changes-table">
             <thead>
               <tr>
-                <th class="col-status">Status</th>
+                <th class="col-status" title="Status">S</th>
                 <th class="col-subject">Subject</th>
                 <th class="col-project">Project</th>
                 <th class="col-branch">Branch</th>

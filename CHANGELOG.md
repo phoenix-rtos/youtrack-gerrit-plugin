@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Improved responsive layout for resizable split-view panels
+  - Widget adapts to multiple container widths with smooth transitions
+  - Subject column prioritized as most important content (commit message titles <78 chars)
+  - Branch column hides at ~450px width (less important than Subject)
+  - Project column hides at very narrow widths (~320px)
+  - Column widths scale dynamically: wider in full view, narrower in split view
+  - Eliminated horizontal scrollbars across all panel sizes
+  - Fixed table layout prevents overflow issues
+
 ### Added
 - `.env.example` file for development environment configuration
 - Documentation for verifying frontend changes using browser automation tools

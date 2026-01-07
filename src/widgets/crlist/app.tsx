@@ -175,7 +175,7 @@ const AppComponent: React.FunctionComponent = () => {
         <table className="changes-table">
           <thead>
             <tr>
-              <th className="col-status">Status</th>
+              <th className="col-status" title="Status">S</th>
               <th className="col-subject">Subject</th>
               <th className="col-project">Project</th>
               <th className="col-branch">Branch</th>
