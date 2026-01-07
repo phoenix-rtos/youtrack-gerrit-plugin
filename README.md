@@ -62,11 +62,11 @@ npm run pack
 For development, you can upload directly:
 
 ```bash
-# Set environment variables
-export YOUTRACK_BASE_URL=https://your-youtrack.example.com
-export YOUTRACK_TOKEN=perm:your-permanent-token
+# Set environment variables in .env file, then once:
+source .env
 
 # Build and upload
+npm run buiild
 npm run upload -- --host $YOUTRACK_BASE_URL --token $YOUTRACK_TOKEN
 ```
 

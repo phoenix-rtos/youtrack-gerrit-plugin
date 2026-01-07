@@ -135,6 +135,32 @@ Limited automated testing options. Preferred approach:
 2. **Manual testing**: With real YouTrack + Gerrit instances
 3. **Console logging**: Use `console.log()` in backend for debugging
 
+### Verifying Frontend Changes
+
+To verify frontend changes visually, use the browser automation tools:
+
+1. **Environment Setup**: Copy `.env.example` to `.env` and configure:
+   - `YOUTRACK_BASE_URL` - Your YouTrack instance URL
+   - `YOUTRACK_TOKEN` - Your YouTrack permanent token
+   - `YOUTRACK_TEST_URLS` - Issue URLs to test (supports split view with `?preview=ISSUE-ID&u=1`)
+
+2. **Build and Upload**: After making changes, build and upload the plugin:
+   ```bash
+   npm run build && npm run upload -- --host "$YOUTRACK_BASE_URL" --token "$YOUTRACK_TOKEN"
+   ```
+
+3. **Visual Verification with Browser Tools**: Use `#io.github.chromedevtools/chrome-devtools-mcp` to:
+   - Open test URLs from `YOUTRACK_TEST_URLS` environment variable
+   - Refresh the page after uploading changes
+   - Take screenshots to verify the layout
+   - Test responsive behavior in narrow split-view panels
+
+4. **Test Scenarios**:
+   - Full issue view (wide layout)
+   - Split view with issue list (narrow layout using `?preview=ISSUE-ID&u=1` URL format)
+   - Different numbers of label columns
+   - Open and closed change sections
+
 ## Common Issues
 
 1. **CORS**: Gerrit CORS headers may block direct widget→Gerrit calls. Always proxy through backend.
