@@ -9,6 +9,45 @@ This is a **YouTrack App** that integrates with **Gerrit Code Review** to displa
 - After each fix/feature that affects the user-visible functionality, the CHANGELOG.md should be updated to reflect the changes made.
 - when doing a release, ensure that the version in manifest.json and package.json are updated accordingly. The CHANGELOG.md should also be updated to move the "Unreleased" section into a new version section with the release date. Use Chahngelog to generate Release notes.
 
+## Release Process
+
+When creating a new release (e.g., v1.3.0):
+
+1. **Update version files**:
+   - Update `version` field in `manifest.json`
+   - Update `version` field in `package.json`
+   - Move "Unreleased" section in `CHANGELOG.md` to new version with today's date
+
+2. **Commit and tag**:
+   ```bash
+   git add CHANGELOG.md manifest.json package.json
+   git commit -m "release: bump version to X.Y.Z"
+   git tag -a vX.Y.Z -m "Release vX.Y.Z"
+   ```
+   **Important**: Always use annotated tags (`-a` flag) for releases, not lightweight tags.
+
+3. **Build and push**:
+   ```bash
+   npm run build && npm run pack
+   git push && git push --tags
+   ```
+
+4. **Create GitHub release**:
+   ```bash
+   gh release create vX.Y.Z \
+     --title "vX.Y.Z" \
+     --notes "<extract from CHANGELOG>" \
+     youtrack-gerrit-plugin.zip
+   ```
+
+5. **Upload to JetBrains Marketplace**:
+   - Go to https://plugins.jetbrains.com/plugin/29633-gerrit-integration/edit
+   - Upload the `youtrack-gerrit-plugin.zip` file
+   - Add release notes from CHANGELOG
+   - Publish the update
+
+**Reminder**: After completing the GitHub release, always upload the new version to JetBrains Marketplace!
+
 ## Technology Stack
 
 ### Frontend (Widget)
