@@ -18,26 +18,27 @@ A YouTrack App that integrates with Gerrit Code Review to display related Change
 
 *The Gerrit Changes widget displays all related code reviews directly in the YouTrack issue view, organized by status (Open/Closed) with approval labels.*
 
-## Installation
+## Getting Started
 
-### Easy Installation (Recommended)
+### Installation
+
+#### Easy Installation (Recommended)
 
 The easiest way to install this plugin is from the **[JetBrains Marketplace](https://plugins.jetbrains.com/plugin/29633-gerrit-integration)**:
 
 1. Go to YouTrack: **Administration > Apps**
 2. Click **Install app from JetBrains Marketplace**
 3. Search for "Gerrit Integration" and install
-4. Configure the app settings (see Configuration below)
+4. Go to **Administration > Apps > Gerrit Integration** and configure the settings (see Configuration below)
 
-### Manual Installation
+#### Manual Installation
 
-#### Prerequisites
-
+**Prerequisites:**
 - YouTrack 2023.3 or later
 - Gerrit 2.13 or later (REST API support required)
 - Node.js 18+ (for building)
 
-#### Building
+**Building:**
 
 ```bash
 # Install dependencies
@@ -50,12 +51,12 @@ npm run build
 npm run pack
 ```
 
-##### Installing in YouTrack
+**Installing in YouTrack:**
 
 1. Build and pack the app (see above)
 2. Go to YouTrack: **Administration > Apps**
 3. Click **New app** and upload the generated `.zip` file from `dist/`
-4. Configure the app settings (see Configuration below)
+4. Go to **Administration > Apps > Gerrit Integration** and configure the settings (see Configuration below)
 
 #### Development Upload
 
@@ -66,35 +67,56 @@ For development, you can upload directly:
 source .env
 
 # Build and upload
-npm run buiild
+npm run build
 npm run upload -- --host $YOUTRACK_BASE_URL --token $YOUTRACK_TOKEN
 ```
 
-## Configuration
+### Configuration
 
-After installing the app, configure it in YouTrack:
+#### Step 1: Gather Required Information
 
-1. Go to **Administration > Apps > Gerrit Plugin > Settings**
+Before configuring the plugin, you'll need to obtain your Gerrit credentials:
+
+**Gerrit URL:** The base URL of your Gerrit server (e.g., `https://gerrit.example.com`)
+
+**Gerrit Username:** Your Gerrit username (the same one you use to log into Gerrit web interface)
+
+**Gerrit HTTP Password:** This is a special password for API access, NOT your regular login password. To generate it:
+
+1. Log into Gerrit web interface (https://gerrit.example.com/)
+2. Click your **profile icon** (top-right corner) or go to **Settings**
+3. Select **HTTP Credentials** (or **HTTP Password**)
+4. If no credentials exist, click **Generate New Password**
+5. Click to reveal the password (it may be hidden initially)
+6. Copy the **entire password** - you'll need it for YouTrack configuration
+7. Keep this password secure; you won't see it again
+
+#### Step 2: Configure in YouTrack
+
+1. Go to YouTrack: **Administration > Apps > Gerrit Integration > Settings**
 2. Fill in the required settings:
 
 | Setting | Description | Required |
 |---------|-------------|----------|
 | **Gerrit URL** | Base URL of your Gerrit server (e.g., `https://gerrit.example.com`) | Yes |
-| **Gerrit Username** | Your Gerrit username | Yes |
-| **Gerrit HTTP Password** | HTTP password from Gerrit (not your login password!) | Yes |
+| **Gerrit Username** | Your Gerrit username (from Step 1) | Yes |
+| **Gerrit HTTP Password** | HTTP password from Gerrit Settings (from Step 1) - NOT your login password | Yes |
 | **Search Query Pattern** | Query pattern to find changes. Use `%s` as issue ID placeholder. Default: `message:%s` | No |
-| **Show Empty Widget** | Show widget even when no changes found | No |
+| **Show Empty Widget** | Show widget even when no related changes are found | No |
 
-### Getting Gerrit HTTP Password
+3. Click **Save** to apply the configuration
 
-1. Log into Gerrit
-2. Go to **Settings > HTTP Credentials**
-3. Click **Generate New Password**
-4. Copy the generated password (you won't see it again!)
+#### Troubleshooting Configuration
 
-### Search Query Patterns
+- **"HTTP 401 Unauthorized"**: Double-check your username and HTTP password. Make sure you're using the HTTP password from Gerrit Settings, NOT your account login password.
+- **"HTTP 403 Forbidden"**: Your Gerrit user account may not have permission to query changes. Contact your Gerrit administrator to check your access permissions.
+- **Settings not saving**: Ensure all required fields are filled in and valid URLs are provided.
 
-The plugin uses Gerrit's search query syntax. Common patterns:
+#### Optional Settings
+
+**Search Query Pattern:** Customize how the plugin finds related changes in Gerrit. The plugin uses Gerrit's search query syntax. Use `%s` as a placeholder for the issue ID.
+
+Common patterns:
 
 | Pattern | Description |
 |---------|-------------|
@@ -102,6 +124,8 @@ The plugin uses Gerrit's search query syntax. Common patterns:
 | `tr:%s` | Search in tracking fields (Bug:, Issue: footers) |
 | `topic:%s` | Search in change topic |
 | `message:%s OR tr:%s` | Search in both message and tracking fields |
+
+**Show Empty Widget:** Enable this to display the Gerrit widget on issue pages even when no related changes are found. By default, the widget is hidden if there are no matching changes.
 
 ## Usage
 
