@@ -216,13 +216,13 @@ Settings are defined in `src/settings.json`:
   "properties": {
     "settingName": {
       "type": "string",
-      "label": "Display Label",
+      "title": "Display Label",
       "description": "Help text"
     },
     "secretSetting": {
       "type": "string",
       "format": "secret",
-      "label": "Password"
+      "title": "Password"
     }
   },
   "required": ["settingName"]

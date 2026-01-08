@@ -6,28 +6,28 @@
     "properties": {
         "gerritUrl": {
             "type": "string",
-            "label": "Gerrit URL",
+            "title": "Gerrit Base URL",
             "description": "Base URL of your Gerrit server (e.g., https://gerrit.example.com)"
         },
         "gerritUsername": {
             "type": "string",
-            "label": "Gerrit Username",
-            "description": "Username for HTTP authentication"
+            "title": "Gerrit Username",
+            "description": "Your Gerrit username (the same one used to log into Gerrit web interface)"
         },
         "gerritPassword": {
             "type": "string",
             "format": "secret",
-            "label": "Gerrit HTTP Password",
+            "title": "Gerrit HTTP Password",
             "description": "HTTP password or API token (generate in Gerrit Settings > HTTP Credentials)"
         },
         "searchQuery": {
             "type": "string",
-            "label": "Search Query Pattern",
-            "description": "Query pattern to find changes. Use %s as placeholder for issue ID. Examples: message:%s, tr:%s, topic:%s. Default: message:%s"
+            "title": "Search Query Pattern",
+            "description": "Optional: Query pattern to find changes. Use %s as placeholder for issue ID. Examples: message:%s (default), tr:%s (tracking fields), topic:%s. Default: message:%s"
         },
         "showEmptyWidget": {
             "type": "boolean",
-            "label": "Show Empty Widget",
+            "title": "Show Empty Widget",
             "description": "Show the widget even when no related changes are found"
         }
     },
