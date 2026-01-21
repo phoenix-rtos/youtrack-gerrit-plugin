@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Tooltip on label values showing voter's name (hover to see "value by username")
+
+### Fixed
+- Label values now display actual vote values from Gerrit API (previously showed +1/+2 only)
+  - Uses LABELS and SUBMIT_REQUIREMENTS to fetch actual vote values from the `all` array
+  - Supports labels with any scale (e.g., -3..+3, asymmetric -1..+2, etc.)
+
 ## [1.3.0] - 2026-01-08
 
 ### Added

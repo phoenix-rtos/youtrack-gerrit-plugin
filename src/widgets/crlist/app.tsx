@@ -48,26 +48,42 @@ interface ApiResponse {
 }
 
 /**
- * Get label cell content with color
+ * Determine label CSS class based on value and flags
  */
-function getLabelDisplay(labels: Record<string, GerritLabel>, labelName: string): { text: string; className: string } {
+function getLabelClassName(label: GerritLabel): string {
+  if (label.approved) {
+    return 'label-approved';
+  }
+  if (label.rejected) {
+    return 'label-rejected';
+  }
+  const value = label.value;
+  if (value.startsWith('+')) {
+    return 'label-positive';
+  }
+  if (value.startsWith('-')) {
+    return 'label-negative';
+  }
+  return 'label-neutral';
+}
+
+/**
+ * Get label cell content with color and tooltip
+ * Uses approved/rejected flags from backend and value sign for styling
+ */
+function getLabelDisplay(labels: Record<string, GerritLabel>, labelName: string): { text: string; className: string; tooltip: string } {
   const label = labels[labelName];
-  if (!label) return { text: '', className: '' };
+  if (!label) {
+    return { text: '', className: '', tooltip: '' };
+  }
   
   const value = label.value;
-  if (label.approved || value === '+2') {
-    return { text: value, className: 'label-approved' };
+  if (value === '0' || value === '') {
+    return { text: value || '0', className: 'label-neutral', tooltip: '' };
   }
-  if (label.rejected || value === '-2') {
-    return { text: value, className: 'label-rejected' };
-  }
-  if (value === '+1') {
-    return { text: value, className: 'label-positive' };
-  }
-  if (value === '-1') {
-    return { text: value, className: 'label-negative' };
-  }
-  return { text: value || '0', className: 'label-neutral' };
+  
+  const tooltip = label.by ? `${value} by ${label.by}` : value;
+  return { text: value, className: getLabelClassName(label), tooltip };
 }
 
 /**
@@ -124,7 +140,7 @@ const AppComponent: React.FunctionComponent = () => {
   if (loading) {
     return (
       <div className="widget widget-loading">
-        <Loader message="Loading Gerrit changes..." />
+        <Loader message="Loading Gerrit changes..."/>
       </div>
     );
   }
@@ -164,7 +180,9 @@ const AppComponent: React.FunctionComponent = () => {
   }));
 
   const renderTable = (changeList: GerritChange[], title: string) => {
-    if (changeList.length === 0) return null;
+    if (changeList.length === 0) {
+      return null;
+    }
     
     return (
       <div className="changes-section">
@@ -203,7 +221,7 @@ const AppComponent: React.FunctionComponent = () => {
                     const ld = getLabelDisplay(change.labels, lc.name);
                     return (
                       <td key={lc.name} className="col-label">
-                        {ld.text && <span className={ld.className}>{ld.text}</span>}
+                        {ld.text && <span className={ld.className} title={ld.tooltip}>{ld.text}</span>}
                       </td>
                     );
                   })}
