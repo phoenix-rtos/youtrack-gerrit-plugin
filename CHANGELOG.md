@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-01-21
+
 ### Added
 - Tooltip on label values showing voter's name (hover to see "value by username")
 
@@ -74,7 +76,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - HTTP password stored securely using YouTrack's secret field type
 
-[Unreleased]: https://github.com/phoenix-rtos/youtrack-gerrit-plugin/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/phoenix-rtos/youtrack-gerrit-plugin/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/phoenix-rtos/youtrack-gerrit-plugin/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/phoenix-rtos/youtrack-gerrit-plugin/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/phoenix-rtos/youtrack-gerrit-plugin/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/phoenix-rtos/youtrack-gerrit-plugin/compare/v1.0.0...v1.1.0
