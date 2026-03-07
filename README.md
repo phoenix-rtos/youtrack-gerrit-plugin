@@ -12,11 +12,17 @@ A YouTrack App that integrates with Gerrit Code Review to display related Change
 - **Rich Metadata**: Shows project, branch, author, line changes, and relative timestamps
 - **Direct Links**: Click on any change to open it in Gerrit
 
-## Screenshot
+## Screenshots
 
-![YouTrack Gerrit Plugin - Issue View](docs/screenshot-issue-view.png)
+### Issue View (Light Mode)
 
-*The Gerrit Changes widget displays all related code reviews directly in the YouTrack issue view, organized by status (Open/Closed) with approval labels.*
+![YouTrack Gerrit Plugin - Real Issue View (Light)](docs/youtrack-gerrit-plugin-light.png)
+
+### Issue View (Dark Mode)
+
+![YouTrack Gerrit Plugin - Real Issue View (Dark)](docs/youtrack-gerrit-plugin-dark.png)
+
+*The Gerrit Changes widget displays related code reviews directly in the YouTrack issue view, organized by status (Open/Closed) with approval labels and review metadata.*
 
 ## Getting Started
 
